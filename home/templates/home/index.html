@@ -1,0 +1,40 @@
+{% extends "home/base.html" %}
+{% block start %}
+
+<div class="container">
+    <h1>This is sent email</h1>
+    <a href="{% url 'send_email' %}" class="btn btn-success">Send Email</a>
+
+</div>
+
+    <h1>This is my first web page</h1>
+    {{peoples}}
+<table class="container">
+    <tr>
+        <th>S.No</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Vote or Not</th>
+    </tr>
+    {%for people in peoples%}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{people.name}}</td>
+        <td>{{people.age}}</td>
+        <td>
+        {% if people.age >= 18 %}
+            Eligible
+        {% else %}
+        Not Eligible
+        {% endif %}
+        </td>
+    </tr>
+    {%endfor%}
+    <tr></tr>
+</table>
+<p>
+    {{text|truncatechars:70}}
+</p>
+<a href='/contact/'>Contact</a>
+<a href='/about/'>about</a>
+{%endblock%}

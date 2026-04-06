@@ -1,0 +1,30 @@
+{% extends 'home/base.html' %}
+{%block start%}
+<div class="container mt-5">
+<table class='table table-stripped'>
+    <div><h1 style="text-align:center"><b><i>Report Card</i></b></h1></div>
+    <h3><b>Name: <i><u>{{queryset.first.student}}</u></i></b></h3>
+    <h4>Rank: <u>{{queryset.first.student.studentreportcard.first.student_rank}}</u></h4>
+    <h4>Total: <u>{{total_marks.total_marks}}</u></h4>
+    <h4>Date of report generation: <u>{{queryset.first.student.studentreportcard.first.date_of_report_card_generation}}</u></h4>
+    <thead>
+        <tr >
+            <th scope="col"><b>SUbject.No</b></th>
+            <th scope="col"><b>Subject name</b></th>
+            <th scope="col"><b>Marks</b></th>
+        </tr>
+    </thead>
+    <tbody>
+            {% for i in queryset%}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td><b>{{i.subject.sub_name}}</b></td>
+            <td>{{i.marks}}</td>
+        </tr>
+        {%endfor%}
+        </tbody>
+
+    </table>
+
+</div>
+{%endblock%}

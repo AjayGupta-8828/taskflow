@@ -1,0 +1,73 @@
+{% extends 'home/base.html' %}
+{% block start %}
+
+<div class="container mt-5">
+<form class="col-6 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Add Recipe</h2>
+        <hr>
+    <div class="mb-3 shadow-sm">
+        <label>Recipe name: </label>
+        <input type="text"  class="form-control" name="recipe_name">
+    </div>
+
+    <div class="mb-3 shadow-sm">
+        <label>Recipe Description: </label>
+        <textarea class="form-control" name="recipe_desc"></textarea>
+    </div>
+
+    <div class="mb-3 shadow-sm">
+        <label>Recipe Image</label>
+        <input type="file" class="form-control" name="recipe_img">
+    </div>
+
+    {% comment %} <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    
+    {% endcomment %}
+    <button type="submit" class="btn btn-success">Click to add recipe</button>
+</form>
+<hr>
+<div class="mt-5">
+<div class="mx-auto col-6">
+<form>
+<div class="mb-3 shadow-sm">
+        <label style="color:Red"><h3>Search Food: </h3></label>
+        <input type="text" class="form-control" name="search_te" >
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+</div>
+
+<table class="table m-5" shadow card>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Recipe name</th>
+      <th scope="col">Description</th>
+      <th scope="col">Picture</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in recipe%}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{i.recipe_name}}</td>
+      <td>{{i.recipe_desc}}</td>
+      
+      <td>
+        <img src="/media/{{i.recipe_img}}" style="height:150px">
+    </td>
+    <td><a href="/delete_recipe/{{i.id}}" class="btn btn-danger m-2" >Delete</a>
+      <a href="/update_recipe/{{i.slug}}" class="btn btn-success">Update</a>
+    </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock  %}
