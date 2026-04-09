@@ -51,6 +51,7 @@ urlpatterns = [
     path("logout1/",logout_user1,name="logout1"),
     path('reorder_tasks/', reorder_tasks, name='reorder_tasks'),
     path('accounts/', include('allauth.urls')),
+    path('db-check/', db_check, name='db_check'),
 ]
 
 if settings.DEBUG:

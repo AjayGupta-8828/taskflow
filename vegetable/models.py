@@ -14,7 +14,7 @@ class vege(models.Model):
     user=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
     recipe_name=models.CharField(max_length=200)
     slug=models.SlugField(unique=True)
-    recipe_desc=models.CharField()
+    recipe_desc=models.CharField(max_length=500)
     recipe_img=models.ImageField()
     is_deleted=models.BooleanField(default=False)
     recipe_view_count=models.IntegerField(default=1)

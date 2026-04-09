@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+from django.db import connection
 User=get_user_model()
 
 import json
@@ -153,3 +155,21 @@ def login_user1(request):
 def logout_user1(request):
     logout(request)
     return redirect('/login1/')
+
+
+
+
+
+# Just to check whether the database connection is working fine or not
+
+def db_check(request):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            result = cursor.fetchone()
+        if result == (1,):
+            return HttpResponse("Database connection is working!")
+        else:
+            return HttpResponse("Unexpected database response.")
+    except Exception as e:
+        return HttpResponse(f"Database connection failed: {e}")

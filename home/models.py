@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 # Create your models here.
 class Student(models.Model):
-    name=models.CharField()
+    name=models.CharField(max_length=100)
     age=models.IntegerField()
     address=models.TextField(blank=True,null=True)
     email=models.EmailField()
