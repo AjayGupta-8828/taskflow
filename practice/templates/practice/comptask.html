@@ -267,88 +267,6 @@
       font-size: 13px;
       color: #888780;
     }
-
-    /* ═══════════════════════════════════════════════
-       MOBILE-ONLY  —  added, nothing above changed
-    ═══════════════════════════════════════════════ */
-
-    .mobile-comp-list { display: none; }
-
-    @media (max-width: 680px) {
-
-      /* swap: hide desktop table, show mobile list */
-      .desktop-task-table { display: none; }
-      .mobile-comp-list   { display: block; }
-
-      /* tighten navbar */
-      .navbar { padding: 10px 0.75rem; }
-      .btn-nav-home, .btn-nav-auth { font-size: 12px; padding: 6px 10px; }
-
-      /* page spacing */
-      .page-wrap { padding: 1.5rem 0.75rem 3rem; gap: 1.25rem; }
-      .page-heading { font-size: 24px; }
-
-      /* ── mobile completed card ── */
-      .mc-card {
-        border-bottom: 0.5px solid rgba(0,0,0,0.07);
-        padding: 14px 16px;
-      }
-      .mc-card:last-child { border-bottom: none; }
-
-      .mc-header {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        margin-bottom: 10px;
-      }
-      .mc-num {
-        font-size: 11px;
-        font-weight: 500;
-        color: #888780;
-        width: 28px;
-        height: 28px;
-        background: #f1f0ed;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        margin-top: 2px;
-      }
-      .mc-title {
-        font-size: 15px;
-        font-weight: 500;
-        color: #1a1a1a;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
-        line-height: 1.4;
-        word-break: break-word;
-      }
-      .mc-dates {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 10px;
-        margin-left: 38px;
-      }
-      .mc-date-group {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
-      .mc-date-label {
-        font-size: 11px;
-        font-weight: 500;
-        color: #888780;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-      .mc-footer {
-        margin-left: 38px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -383,101 +301,54 @@
 
     <!-- TABLE -->
     <div class="task-table-wrap">
-
-      <!-- ── DESKTOP TABLE (original, zero changes) ── -->
-      <div class="desktop-task-table">
-        <table class="task-table">
-          <thead>
-            <tr>
-              <th>Sr no.</th>
-              <th>Completed task</th>
-              <th>Created at</th>
-              <th>Completed at</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for i in tasks %}
-            <tr>
-              <td><div class="task-num">{{ forloop.counter }}</div></td>
-              <td>
-                <div class="task-title">
-                  <span class="done-tick">
-                    <svg viewBox="0 0 12 12">
-                      <polyline points="2,6 5,9 10,3"/>
-                    </svg>
-                  </span>
-                  {{ i.title1 }}
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>Sr no.</th>
+            <th>Completed task</th>
+            <th>Created at</th>
+            <th>Completed at</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in tasks %}
+          <tr>
+            <td><div class="task-num">{{ forloop.counter }}</div></td>
+            <td>
+              <div class="task-title">
+                <span class="done-tick">
+                  <svg viewBox="0 0 12 12">
+                    <polyline points="2,6 5,9 10,3"/>
+                  </svg>
+                </span>
+                {{ i.title1 }}
+              </div>
+            </td>
+            <td><span class="date-badge">{{ i.created_at }}</span></td>
+            <td><span class="date-badge completed">{{ i.completed_at }}</span></td>
+            <td>
+              <a href="/delete_comptask/{{ i.id }}" class="btn-delete">Delete</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <svg viewBox="0 0 24 24">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
                 </div>
-              </td>
-              <td><span class="date-badge">{{ i.created_at }}</span></td>
-              <td><span class="date-badge completed">{{ i.completed_at }}</span></td>
-              <td>
-                <a href="/delete_comptask/{{ i.id }}" class="btn-delete">Delete</a>
-              </td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="5">
-                <div class="empty-state">
-                  <div class="empty-icon">
-                    <svg viewBox="0 0 24 24">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                  </div>
-                  <p class="empty-title">No completed tasks yet</p>
-                  <p class="empty-sub">Tasks you mark as done will appear here.</p>
-                </div>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <!-- ── MOBILE CARD LIST (visible only on ≤680px) ── -->
-      <div class="mobile-comp-list">
-        {% for i in tasks %}
-        <div class="mc-card">
-          <div class="mc-header">
-            <div class="mc-num">{{ forloop.counter }}</div>
-            <span class="mc-title">
-              <span class="done-tick">
-                <svg viewBox="0 0 12 12" style="width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;">
-                  <polyline points="2,6 5,9 10,3"/>
-                </svg>
-              </span>
-              {{ i.title1 }}
-            </span>
-          </div>
-          <div class="mc-dates">
-            <div class="mc-date-group">
-              <span class="mc-date-label">Created</span>
-              <span class="date-badge">{{ i.created_at }}</span>
-            </div>
-            <div class="mc-date-group">
-              <span class="mc-date-label">Done</span>
-              <span class="date-badge completed">{{ i.completed_at }}</span>
-            </div>
-          </div>
-          <div class="mc-footer">
-            <a href="/delete_comptask/{{ i.id }}" class="btn-delete">Delete</a>
-          </div>
-        </div>
-        {% empty %}
-        <div class="empty-state">
-          <div class="empty-icon">
-            <svg viewBox="0 0 24 24">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <p class="empty-title">No completed tasks yet</p>
-          <p class="empty-sub">Tasks you mark as done will appear here.</p>
-        </div>
-        {% endfor %}
-      </div>
-
-    </div><!-- /task-table-wrap -->
+                <p class="empty-title">No completed tasks yet</p>
+                <p class="empty-sub">Tasks you mark as done will appear here.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
   </div>
   {% endblock %}

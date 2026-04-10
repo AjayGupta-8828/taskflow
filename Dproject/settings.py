@@ -56,13 +56,13 @@ SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     
     'allauth.account.middleware.AccountMiddleware', 
 ]
@@ -109,7 +109,7 @@ if os.getenv("DATABASE_URL"):
         'default': dj_database_url.parse(
             os.getenv("DATABASE_URL"),
             conn_max_age=600,
-            ssl_require=True
+            ssl_require=False
         )
     }
 else:
@@ -159,7 +159,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT=os.path.join(BASE_DIR,'staticfiles')
 
-STATICFILES_DIR=[
+STATICFILES_DIRS=[
     os.path.join(BASE_DIR,"public/static")
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -181,8 +181,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 LOGIN_REDIRECT_URL            = '/todo/'
 LOGOUT_REDIRECT_URL           = '/login1/'
-LOGIN_REDIRECT_URL  = '/todo/'
-LOGOUT_REDIRECT_URL = '/login1/'
+
 
 # ✅ New allauth v6 settings
 ACCOUNT_LOGIN_METHODS          = {'email'}

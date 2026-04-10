@@ -3,41 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My To-Do App</title>
+  <title>Update Task — TaskFlow</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
 
-  <nav class="navbar navbar-dark bg-primary px-4">
-    <a class="navbar-brand" href="/tasks/">My To-Do List</a>
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f1f0ed;
+      min-height: 100vh;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      background: #185FA5 !important;
+      padding: 14px 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+    .navbar-brand {
+      color: #fff !important;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+    .btn-nav-back {
+      background: #1D9E75;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 18px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-nav-back:hover { background: #0F6E56; color: #fff; }
+
+    .btn-nav-auth {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 18px;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-nav-auth:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    /* ── PAGE ── */
+    .page-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1rem 4rem;
+    }
+
+    /* ── FORM CARD ── */
+    .todo-card {
+      background: #fff;
+      border: 0.5px solid rgba(0,0,0,0.1);
+      border-radius: 16px;
+      padding: 2.5rem 2.25rem 2rem;
+      width: 100%;
+      max-width: 580px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    }
+
+    .card-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #888780;
+      margin-bottom: 6px;
+    }
+
+    .card-heading {
+      font-family: 'Fraunces', serif;
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1.2;
+      color: #1a1a1a;
+      margin-bottom: 2rem;
+    }
+    .card-heading em {
+      font-style: italic;
+      color: #1D9E75;
+    }
+
+    /* ── FIELD LABELS ── */
+    .field-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888780;
+      margin-bottom: 8px;
+    }
+    .label-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #1D9E75;
+      flex-shrink: 0;
+    }
+
+    /* ── UNDERLINE INPUTS ── */
+    .field-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1.5px solid rgba(0,0,0,0.18);
+      border-radius: 0;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: #1a1a1a;
+      padding: 8px 0;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field-input::placeholder { color: #b4b2a9; font-style: italic; }
+    .field-input:focus { border-bottom-color: #1D9E75; box-shadow: none; }
+
+    /* ── DATE INPUT ── */
+    .field-date {
+      width: 100%;
+      border: 0.5px solid rgba(0,0,0,0.18);
+      border-radius: 8px;
+      background: #f7f6f3;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: #1a1a1a;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: none !important;
+    }
+    .field-date:focus {
+      border-color: #1D9E75;
+      box-shadow: 0 0 0 3px rgba(29,158,117,0.12);
+    }
+
+    /* ── DIVIDER ── */
+    .form-divider {
+      border: none;
+      border-top: 0.5px solid rgba(0,0,0,0.08);
+      margin: 1.75rem 0 1.5rem;
+    }
+
+    /* ── BUTTON ROW ── */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .update-btn {
+      flex: 1;
+      background: #1D9E75;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      padding: 13px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .update-btn:hover  { background: #0F6E56; }
+    .update-btn:active { transform: scale(0.99); }
+
+    .cancel-btn {
+      background: #fff;
+      color: #888780;
+      border: 0.5px solid rgba(0,0,0,0.18);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 13px 22px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cancel-btn:hover { background: #f7f6f3; border-color: rgba(0,0,0,0.28); color: #444; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 680px) {
+      .navbar { padding: 10px 0.75rem; }
+      .navbar-brand { font-size: 15px; }
+      .btn-nav-back, .btn-nav-auth { font-size: 11px; padding: 6px 10px; }
+
+      .page-wrap { padding: 1.5rem 0.75rem 3rem; }
+
+      .todo-card { padding: 1.5rem 1.25rem 1.25rem; border-radius: 14px; }
+      .card-heading { font-size: 24px; margin-bottom: 1.5rem; }
+
+      .field-date { -webkit-appearance: none; appearance: none; background-image: none !important; }
+
+      .btn-row { flex-direction: column; }
+      .cancel-btn { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container-fluid d-flex align-items-center gap-3">
+      <a class="navbar-brand" href="/todo/">TaskFlow</a>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <a href="/todo/" class="btn-nav-back">&#8592; Back</a>
+        {% if request.user.is_authenticated %}
+          <a href='/logout1/' class="btn-nav-auth">Logout</a>
+        {% else %}
+          <a href='/login1/' class="btn-nav-auth">Login</a>
+        {% endif %}
+      </div>
+    </div>
   </nav>
 
-  <div class="container mt-4">
   {% block start %}
-<div class="container mt-5">
-<form class="col-6 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data",Action="{% url 'todocheck' %}">
-  {% csrf_token %}
-  <h2>Add your task here</h2>
-  <div class="mb-3">
-    <label >Title:</label>
-    <input type="text" class="form-control" value="{{tasks.title1}}" name="title1">
-  </div>
-  <div class="mb-3">
-    <label >Description</label>
-    <input type="text" class="form-control"  value="{{tasks.desc}}" name="desc" >
-  </div>
-  <div class="mb-3">
-    <label >Due date</label>
-    <input type="date" class="form-control"  value="{{tasks.due_date}}" name="due_date">
-  </div>
-  <button type="submit" class="btn btn-primary">Update</button>
-</form>
-</div>
+  <div class="page-wrap">
+    <div class="todo-card">
+      <p class="card-eyebrow">Editing task</p>
+      <h2 class="card-heading">Update your task <em>here</em></h2>
 
-{% endblock %}
-</div>
+      <form method="post" enctype="multipart/form-data" action="{% url 'todocheck' %}">
+        {% csrf_token %}
 
-  
+        <div class="mb-4">
+          <div class="field-label"><span class="label-dot"></span> Title</div>
+          <input type="text" class="field-input" name="title1"
+                 value="{{ tasks.title1 }}" placeholder="Task title">
+        </div>
+
+        <div class="mb-4">
+          <div class="field-label"><span class="label-dot"></span> Description</div>
+          <input type="text" class="field-input" name="desc"
+                 value="{{ tasks.desc }}" placeholder="A little more detail...">
+        </div>
+
+        <div class="mb-4">
+          <div class="field-label"><span class="label-dot"></span> Due date</div>
+          <input type="date" class="field-date" name="due_date"
+                 value="{{ tasks.due_date }}">
+        </div>
+
+        <hr class="form-divider">
+
+        <div class="btn-row">
+          <button type="submit" class="update-btn">
+            ✓ Save changes
+          </button>
+          <a href="/todo/" class="cancel-btn">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endblock %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

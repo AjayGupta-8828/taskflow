@@ -37,6 +37,8 @@ def todocheck(request):
         title1=data.get("title1")
         desc=data.get("desc")
         due_date=data.get("due_date")
+        if not due_date:
+            due_date = None
         priority = request.POST.get('priority', 'High')
         if title1:
             todo.objects.create(
