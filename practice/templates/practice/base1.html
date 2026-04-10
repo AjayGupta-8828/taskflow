@@ -419,13 +419,127 @@
     tr[draggable="true"] {
   cursor: grab;
 }
-tr[draggable="true"]:active {
+    tr[draggable="true"]:active {
   cursor: grabbing;
 }
-tr.drag-over {
+    tr.drag-over {
   border-top: 2px solid #185FA5 !important;
   background: #E6F1FB !important;
 }
+
+    /* ═══════════════════════════════════════════════
+       MOBILE-ONLY  —  added, nothing above changed
+    ═══════════════════════════════════════════════ */
+
+    /* hide mobile list on desktop */
+    .mobile-task-list { display: none; }
+
+    @media (max-width: 680px) {
+
+      /* swap: hide desktop table, show mobile list */
+      .desktop-task-table { display: none; }
+      .mobile-task-list   { display: block; }
+
+      /* tighten navbar on small screens */
+      .navbar { padding: 10px 0.75rem; }
+      .btn-nav-completed, .btn-nav-auth { font-size: 12px; padding: 6px 10px; }
+
+      /* reduce page breathing room */
+      .page-wrap { padding: 1.5rem 0.75rem 3rem; gap: 1.5rem; }
+
+      /* form card: less padding */
+      .todo-card { padding: 1.5rem 1.25rem 1.25rem; }
+      .card-heading { font-size: 24px; margin-bottom: 1.5rem; }
+
+      /* ── mobile task card ── */
+      .m-card {
+        border-bottom: 0.5px solid rgba(0,0,0,0.07);
+        padding: 14px 16px;
+      }
+      .m-card:last-child { border-bottom: none; }
+
+      .m-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .m-card-left {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        flex: 1;
+        min-width: 0;
+      }
+      .m-num {
+        font-size: 11px;
+        font-weight: 500;
+        color: #888780;
+        width: 28px;
+        height: 28px;
+        background: #f1f0ed;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .m-title {
+        font-size: 15px;
+        font-weight: 500;
+        color: #1a1a1a;
+        line-height: 1.4;
+        word-break: break-word;
+      }
+      .m-desc {
+        font-size: 13px;
+        color: #888780;
+        margin: 4px 0 10px 38px;
+        line-height: 1.5;
+      }
+      .m-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0 0 10px 38px;
+      }
+      .m-priority-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 9px;
+        border-radius: 20px;
+      }
+      .m-priority-badge.high { background: #FCEBEB; color: #791F1F; border: 0.5px solid #A32D2D; }
+      .m-priority-badge.mid  { background: #FAEEDA; color: #633806; border: 0.5px solid #854F0B; }
+      .m-priority-badge.low  { background: #EAF3DE; color: #27500A; border: 0.5px solid #3B6D11; }
+
+      .m-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-left: 38px;
+      }
+      .m-actions { display: flex; gap: 6px; }
+      .m-done-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #888780;
+        cursor: pointer;
+      }
+      .m-done-check {
+        width: 17px;
+        height: 17px;
+        accent-color: #1D9E75;
+      }
+    }
   </style>
 </head>
 <body>
@@ -507,20 +621,23 @@ tr.drag-over {
 
     <!-- TASK TABLE -->
     <div class="task-table-wrap">
-      <table class="task-table">
-        <thead>
-          <tr>
-            <th></th>  <!-- empty header for the handle column -->
-            <th>#</th>
-            <th>Task</th>
-            <th>Description</th>
-            <th>Due date</th>
-            <th>Priority</th>
-            <th>Done</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+
+      <!-- ── DESKTOP TABLE (original, zero changes) ── -->
+      <div class="desktop-task-table">
+        <table class="task-table">
+          <thead>
+            <tr>
+              <th></th>  <!-- empty header for the handle column -->
+              <th>#</th>
+              <th>Task</th>
+              <th>Description</th>
+              <th>Due date</th>
+              <th>Priority</th>
+              <th>Done</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
   {% for i in tasks %}
   <tr draggable="true" data-id="{{ i.id }}">
     <td style="cursor: grab; color: #b4b2a9; font-size: 18px; padding-left: 16px;">⠿</td>
@@ -567,9 +684,58 @@ tr.drag-over {
     </td>
   </tr>
   {% endfor %}
-</tbody>
+          </tbody>
+        </table>
+      </div>
 
-      </table>
+      <!-- ── MOBILE CARD LIST (visible only on ≤680px) ── -->
+      <div class="mobile-task-list">
+        {% for i in tasks %}
+        <div class="m-card">
+          <div class="m-card-top">
+            <div class="m-card-left">
+              <div class="m-num">{{ forloop.counter }}</div>
+              <span class="m-title">{{ i.title1 }}</span>
+            </div>
+            {% if i.priority == 'High' %}
+              <span class="m-priority-badge high">High</span>
+            {% elif i.priority == 'Medium' %}
+              <span class="m-priority-badge mid">Medium</span>
+            {% else %}
+              <span class="m-priority-badge low">Low</span>
+            {% endif %}
+          </div>
+
+          {% if i.desc %}
+          <p class="m-desc">{{ i.desc }}</p>
+          {% endif %}
+
+          <div class="m-meta">
+            <span class="due-badge{% if i.due_date|date:'U' < 'now'|date:'U' %} overdue{% endif %}">{{ i.due_date }}</span>
+          </div>
+
+          <div class="m-footer">
+            <form class="done-form" method="post" action="/done_task/{{ i.id }}/">
+              {% csrf_token %}
+              <label class="m-done-label">
+                <input class="m-done-check" type="checkbox" name="done" onchange="this.form.submit()">
+                Mark done
+              </label>
+            </form>
+            <div class="m-actions">
+              <button type="button" class="btn-update" onclick="window.location.href='/update_todo/{{ i.id }}/'">Update</button>
+              <button type="button" class="btn-delete" onclick="if(confirm('Delete?')) window.location.href='/delete_todo/{{ i.id }}/'">Delete</button>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+          <div class="empty-icon">✓</div>
+          No tasks yet — add one above!
+        </div>
+        {% endfor %}
+      </div>
+
     </div>
 
   </div>
