@@ -22,10 +22,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from practice.views import *
-
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('',html,name='html'),
+    path('',RedirectView.as_view(url='/todo/')),
     path('home/',home,name="home"),
     path('about/',about,name="about"),
     path('contact/',contact,name="contact"),
