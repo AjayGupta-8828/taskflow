@@ -179,7 +179,6 @@
     .priority-chip.active-mid  { background: #FAEEDA; border-color: #854F0B; color: #633806; }
     .priority-chip.active-high { background: #FCEBEB; border-color: #A32D2D; color: #791F1F; }
 
-    /* hidden input carries the priority value for the form */
     #priorityInput { display: none; }
 
     /* ── CHAR HINT ── */
@@ -400,7 +399,6 @@
       text-decoration: none;
       transition: background 0.2s, color 0.2s;
       display: inline-block;
-      margin-left: 6px;
     }
     .btn-delete:hover { background: #FCEBEB; color: #791F1F; }
 
@@ -416,16 +414,123 @@
       margin-bottom: 10px;
       opacity: 0.4;
     }
-    tr[draggable="true"] {
-  cursor: grab;
-}
-tr[draggable="true"]:active {
-  cursor: grabbing;
-}
-tr.drag-over {
-  border-top: 2px solid #185FA5 !important;
-  background: #E6F1FB !important;
-}
+
+    tr[draggable="true"] { cursor: grab; }
+    tr[draggable="true"]:active { cursor: grabbing; }
+    tr.drag-over {
+      border-top: 2px solid #185FA5 !important;
+      background: #E6F1FB !important;
+    }
+
+    /* ─────────────────────────────────────────
+       MOBILE CARD LAYOUT  (≤ 640 px)
+    ───────────────────────────────────────── */
+    @media (max-width: 640px) {
+
+      .page-wrap { padding: 1.5rem 0.75rem 3rem; gap: 1.5rem; }
+
+      /* Navbar tighten */
+      .navbar { padding: 12px 1rem; }
+      .btn-nav-completed, .btn-nav-auth { font-size: 12px; padding: 7px 12px; }
+
+      /* Form card */
+      .todo-card { padding: 1.75rem 1.25rem 1.5rem; }
+      .card-heading { font-size: 26px; }
+
+      /* Search */
+      .search-wrap { max-width: 100%; }
+
+      /* ── Hide the desktop table entirely ── */
+      .task-table-wrap { background: transparent; border: none; box-shadow: none; overflow: visible; }
+      .task-table { display: none; }
+
+      /* ── Show mobile cards ── */
+      .mobile-task-list { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+
+      .mobile-task-card {
+        background: #fff;
+        border: 0.5px solid rgba(0,0,0,0.1);
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      }
+
+      .mtc-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .mtc-drag {
+        color: #b4b2a9;
+        font-size: 18px;
+        flex-shrink: 0;
+        margin-top: 2px;
+        cursor: grab;
+      }
+
+      .mtc-num {
+        font-size: 11px;
+        font-weight: 500;
+        color: #888780;
+        width: 28px;
+        height: 28px;
+        background: #f1f0ed;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .mtc-title-block { flex: 1; min-width: 0; }
+
+      .mtc-title {
+        font-weight: 500;
+        font-size: 15px;
+        color: #1a1a1a;
+        margin-bottom: 3px;
+        word-break: break-word;
+      }
+
+      .mtc-desc {
+        color: #888780;
+        font-size: 13px;
+        word-break: break-word;
+      }
+
+      .mtc-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .mtc-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border-top: 0.5px solid rgba(0,0,0,0.07);
+        padding-top: 12px;
+      }
+
+      .mtc-actions { display: flex; gap: 8px; }
+
+      .mobile-empty {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #888780;
+        font-size: 14px;
+      }
+    }
+
+    /* Hide mobile list on desktop */
+    @media (min-width: 641px) {
+      .mobile-task-list { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -505,12 +610,14 @@ tr.drag-over {
       </form>
     </div>
 
-    <!-- TASK TABLE -->
+    <!-- ══════════════════════════════════════
+         DESKTOP TABLE (hidden on mobile)
+    ══════════════════════════════════════ -->
     <div class="task-table-wrap">
       <table class="task-table">
         <thead>
           <tr>
-            <th></th>  <!-- empty header for the handle column -->
+            <th></th>
             <th>#</th>
             <th>Task</th>
             <th>Description</th>
@@ -521,56 +628,107 @@ tr.drag-over {
           </tr>
         </thead>
         <tbody>
-  {% for i in tasks %}
-  <tr draggable="true" data-id="{{ i.id }}">
-    <td style="cursor: grab; color: #b4b2a9; font-size: 18px; padding-left: 16px;">⠿</td>
-    <td><div class="task-num">{{ forloop.counter }}</div></td>
-    <td><span class="task-title">{{ i.title1 }}</span></td>
-    <td><span class="task-desc">{{ i.desc }}</span></td>
-    <td><span class="due-badge{% if i.due_date|date:'U' < 'now'|date:'U' %} overdue{% endif %}">{{ i.due_date }}</span></td>
-    <td>
-      {% if i.priority == 'High' %}
-        <span style="background:#FCEBEB;color:#791F1F;border:0.5px solid #A32D2D;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">High</span>
-      {% elif i.priority == 'Medium' %}
-        <span style="background:#FAEEDA;color:#633806;border:0.5px solid #854F0B;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">Medium</span>
-      {% else %}
-        <span style="background:#EAF3DE;color:#27500A;border:0.5px solid #3B6D11;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">Low</span>
-      {% endif %}
-    </td>
-    <td>
-      <form class="done-form" method="post" action="/done_task/{{ i.id }}/">
-        {% csrf_token %}
-        <label class="done-label">
-          <input class="done-check" type="checkbox" name="done" id="check{{ i.id }}" onchange="this.form.submit()">
-          Done
-        </label>
-      </form>
-    </td>
-    <td style="display: flex; gap: 6px; align-items: center;">
-      <form method="post" action="/update_todo/{{ i.id }}/" style="margin:0;">
-        {% csrf_token %}
-        <button type="button" class="btn-update" onclick="window.location.href='/update_todo/{{ i.id }}/'">Update</button>
-      </form>
-      <form method="post" action="/delete_todo/{{ i.id }}/" style="margin:0;">
-        {% csrf_token %}
-        <button type="button" class="btn-delete" onclick="if(confirm('Delete?')) window.location.href='/delete_todo/{{ i.id }}/'">Delete</button>
-      </form>
-    </td>
-  </tr>
-  {% empty %}
-  <tr>
-    <td colspan="8">
-      <div class="empty-state">
-        <div class="empty-icon">✓</div>
-        No tasks yet — add one above!
-      </div>
-    </td>
-  </tr>
-  {% endfor %}
-</tbody>
-
+          {% for i in tasks %}
+          <tr draggable="true" data-id="{{ i.id }}">
+            <td style="cursor:grab;color:#b4b2a9;font-size:18px;padding-left:16px;">⠿</td>
+            <td><div class="task-num">{{ forloop.counter }}</div></td>
+            <td><span class="task-title">{{ i.title1 }}</span></td>
+            <td><span class="task-desc">{{ i.desc }}</span></td>
+            <td><span class="due-badge">{{ i.due_date }}</span></td>
+            <td>
+              {% if i.priority == 'High' %}
+                <span style="background:#FCEBEB;color:#791F1F;border:0.5px solid #A32D2D;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">High</span>
+              {% elif i.priority == 'Medium' %}
+                <span style="background:#FAEEDA;color:#633806;border:0.5px solid #854F0B;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">Medium</span>
+              {% else %}
+                <span style="background:#EAF3DE;color:#27500A;border:0.5px solid #3B6D11;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">Low</span>
+              {% endif %}
+            </td>
+            <td>
+              <form class="done-form" method="post" action="/done_task/{{ i.id }}/">
+                {% csrf_token %}
+                <label class="done-label">
+                  <input class="done-check" type="checkbox" name="done" id="check{{ i.id }}" onchange="this.form.submit()">
+                  Done
+                </label>
+              </form>
+            </td>
+            <td style="display:flex;gap:6px;align-items:center;">
+              <a href="/update_todo/{{ i.id }}/" class="btn-update">Update</a>
+              <a href="/delete_todo/{{ i.id }}/" class="btn-delete"
+                 onclick="return confirm('Delete?')">Delete</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8">
+              <div class="empty-state">
+                <div class="empty-icon">✓</div>
+                No tasks yet — add one above!
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
       </table>
-    </div>
+
+      <!-- ══════════════════════════════════════
+           MOBILE CARD LIST (shown only on mobile)
+      ══════════════════════════════════════ -->
+      <div class="mobile-task-list">
+        {% for i in tasks %}
+        <div class="mobile-task-card" draggable="true" data-id="{{ i.id }}">
+
+          <!-- Header row: drag handle · number · title + desc · done checkbox -->
+          <div class="mtc-header">
+            <span class="mtc-drag">⠿</span>
+            <div class="mtc-num">{{ forloop.counter }}</div>
+            <div class="mtc-title-block">
+              <div class="mtc-title">{{ i.title1 }}</div>
+              {% if i.desc %}<div class="mtc-desc">{{ i.desc }}</div>{% endif %}
+            </div>
+            <form class="done-form" method="post" action="/done_task/{{ i.id }}/" style="flex-shrink:0;">
+              {% csrf_token %}
+              <label class="done-label" style="flex-direction:column;align-items:center;gap:4px;font-size:10px;letter-spacing:0.04em;text-transform:uppercase;">
+                <input class="done-check" type="checkbox" name="done"
+                       id="mcheck{{ i.id }}" onchange="this.form.submit()">
+                Done
+              </label>
+            </form>
+          </div>
+
+          <!-- Meta row: due date -->
+          <div class="mtc-meta">
+            <span class="due-badge">📅 {{ i.due_date }}</span>
+          </div>
+
+          <!-- Footer: priority badge + action buttons -->
+          <div class="mtc-footer">
+            {% if i.priority == 'High' %}
+              <span style="background:#FCEBEB;color:#791F1F;border:0.5px solid #A32D2D;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">🔴 High</span>
+            {% elif i.priority == 'Medium' %}
+              <span style="background:#FAEEDA;color:#633806;border:0.5px solid #854F0B;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">🟠 Medium</span>
+            {% else %}
+              <span style="background:#EAF3DE;color:#27500A;border:0.5px solid #3B6D11;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;">🟢 Low</span>
+            {% endif %}
+
+            <div class="mtc-actions">
+              <a href="/update_todo/{{ i.id }}/" class="btn-update">Update</a>
+              <a href="/delete_todo/{{ i.id }}/" class="btn-delete"
+                 onclick="return confirm('Delete?')">Delete</a>
+            </div>
+          </div>
+
+        </div>
+        {% empty %}
+        <div class="mobile-empty">
+          <div class="empty-icon">✓</div>
+          No tasks yet — add one above!
+        </div>
+        {% endfor %}
+      </div>
+
+    </div><!-- /task-table-wrap -->
 
   </div>
   {% endblock %}
@@ -589,67 +747,80 @@ tr.drag-over {
       el.classList.add(cls);
       document.getElementById('priorityInput').value = val;
     }
-  const tbody = document.querySelector('.task-table tbody');
-  let draggedRow = null;
-  let draggedId  = null;
 
-  // Add listeners to every row
-  function initDrag() {
-    document.querySelectorAll('.task-table tbody tr[data-id]').forEach(row => {
-      row.addEventListener('dragstart', function(e) {
-        draggedRow = this;
-        draggedId  = this.dataset.id;
-        setTimeout(() => this.style.opacity = '0.4', 0);
+    /* ── Drag-and-drop (desktop table) ── */
+    const tbody = document.querySelector('.task-table tbody');
+    let draggedRow = null;
+
+    function initTableDrag() {
+      document.querySelectorAll('.task-table tbody tr[data-id]').forEach(row => {
+        row.addEventListener('dragstart', function() {
+          draggedRow = this;
+          setTimeout(() => this.style.opacity = '0.4', 0);
+        });
+        row.addEventListener('dragend', function() {
+          this.style.opacity = '1';
+          document.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+          saveOrder();
+        });
+        row.addEventListener('dragover', function(e) {
+          e.preventDefault(); e.stopPropagation();
+          if (this === draggedRow) return;
+          document.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+          this.classList.add('drag-over');
+          const mid = this.getBoundingClientRect().top + this.getBoundingClientRect().height / 2;
+          tbody.insertBefore(draggedRow, e.clientY < mid ? this : this.nextSibling);
+        });
+        row.addEventListener('dragenter', e => e.preventDefault());
       });
+    }
 
-      row.addEventListener('dragend', function() {
-        this.style.opacity = '1';
-        document.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-        saveOrder();
+    /* ── Drag-and-drop (mobile cards) ── */
+    const mobileList = document.querySelector('.mobile-task-list');
+    let draggedCard = null;
+
+    function initCardDrag() {
+      document.querySelectorAll('.mobile-task-card[data-id]').forEach(card => {
+        card.addEventListener('dragstart', function() {
+          draggedCard = this;
+          setTimeout(() => this.style.opacity = '0.4', 0);
+        });
+        card.addEventListener('dragend', function() {
+          this.style.opacity = '1';
+          saveOrderMobile();
+        });
+        card.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          if (this === draggedCard) return;
+          const mid = this.getBoundingClientRect().top + this.getBoundingClientRect().height / 2;
+          mobileList.insertBefore(draggedCard, e.clientY < mid ? this : this.nextSibling);
+        });
+        card.addEventListener('dragenter', e => e.preventDefault());
       });
+    }
 
-      row.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (this === draggedRow) return;
-        document.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
-        this.classList.add('drag-over');
-        const rect = this.getBoundingClientRect();
-        const mid  = rect.top + rect.height / 2;
-        if (e.clientY < mid) {
-          tbody.insertBefore(draggedRow, this);
-        } else {
-          tbody.insertBefore(draggedRow, this.nextSibling);
-        }
-      });
+    function saveOrder() {
+      const rows  = [...tbody.querySelectorAll('tr[data-id]')];
+      const order = rows.map((r, i) => ({ id: parseInt(r.dataset.id), order: i }));
+      fetch('/reorder_tasks/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order)
+      }).then(r => r.json()).catch(console.error);
+    }
 
-      row.addEventListener('dragenter', function(e) {
-        e.preventDefault();
-      });
-    });
-  }
+    function saveOrderMobile() {
+      const cards = [...mobileList.querySelectorAll('.mobile-task-card[data-id]')];
+      const order = cards.map((c, i) => ({ id: parseInt(c.dataset.id), order: i }));
+      fetch('/reorder_tasks/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order)
+      }).then(r => r.json()).catch(console.error);
+    }
 
-  function saveOrder() {
-    const rows  = [...tbody.querySelectorAll('tr[data-id]')];
-    const order = rows.map((r, i) => ({
-      id: parseInt(r.dataset.id),
-      order: i
-    }));
-
-    console.log('Saving order:', order); // check browser console
-
-    fetch('/reorder_tasks/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(order)
-    })
-    .then(res => res.json())
-    .then(data => console.log('Server response:', data))
-    .catch(err => console.error('Fetch error:', err));
-  }
-
-  initDrag();
-
+    initTableDrag();
+    initCardDrag();
   </script>
 </body>
 </html>
